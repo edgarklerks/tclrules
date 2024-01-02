@@ -1,8 +1,13 @@
+
+package require hash
+#catch {[hashVal]} res
+#catch {[hashFile]} res
 package provide ruleH 1.0
 package require logger 1.0
 package require rulesUtils 1.0
 package require rulesEnv 1.0
 package require rulesGraph 1.0
+
 namespace eval Rules {
     variable rules [dict create]
     variable ruleEdges [dict create]
@@ -33,6 +38,7 @@ ruleH runOnce {name} {
         return 0
     }
 }
+
 
 ruleH runRule {name} {
     if {[dict exists $rulesDef $name] eq 0} {

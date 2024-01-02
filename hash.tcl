@@ -1,5 +1,5 @@
-package provide hash 1.0 
 package require critcl 
+package provide hash 1.0 
 
 
 critcl::ccommand hashValInc {cd interp objc objv} {
@@ -42,4 +42,18 @@ critcl::ccommand hashVal {cd interp objc objv} {
     Tcl_SetObjResult(interp,Tcl_NewLongObj(hash));
     return TCL_OK;
 
+}
+
+proc hashFile {file} {
+    set fh [open $file "r"]
+    set hs 5381 
+    while (1) {
+        if {[eof $fh]} {
+            close $fh;
+            break;
+        }
+        set bts [read $fh]
+        set hs [hashValInc $hs $bts]
+    } 
+    return $hs
 }

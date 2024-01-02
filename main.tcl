@@ -1,12 +1,10 @@
 #!env tclsh
 
 lappend auto_path [pwd]
-
-package require struct
 package require ruleH
 package require runner
 package require logger
-package require hash
+
 
 source Rules 
 Rules::checkRules

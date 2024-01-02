@@ -17,8 +17,7 @@ namespace eval Rules {
         dict unset envVars $name
     }
 }
-
-if {[info proc _unknown]==""} {rename unknown _unknown} ;# keep the original
+rename  unknown env_unknown_original  
 proc unknown {args} {
     set stringStart [string index $args 0]
     if {[llength $args] == 1 && $stringStart eq "%"} {
@@ -30,5 +29,5 @@ proc unknown {args} {
             return [Rules::env $data]
         }
     }
-    return [_unknown $args]
+    uplevel 1 env_unknown_original $args
 } 
