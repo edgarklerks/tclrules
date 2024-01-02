@@ -1,6 +1,7 @@
 package provide ruleH 1.0
 package require logger 1.0
 package require rulesUtils 1.0
+package require rulesEnv 1.0
 package require rulesGraph 1.0
 namespace eval Rules {
     variable rules [dict create]
@@ -9,6 +10,14 @@ namespace eval Rules {
     variable ranRules [dict create]
     variable ruleChecks [list]
     variable err
+
+    ruleH reset {} {
+        variable rules [dict create]
+        variable rulesDef [dict create]
+        variable ruleEdges [dict create]
+        variable ranRules [dict create] 
+        variable err 0
+    }
 }
 
 ruleH addRuleCheck {name} {
@@ -26,6 +35,10 @@ ruleH runOnce {name} {
 }
 
 ruleH runRule {name} {
+    if {[dict exists $rulesDef $name] eq 0} {
+        Logger::error "Rule $name doesn't exist" 
+        exit 1
+    }
     set ruleDef [dict get $rulesDef $name]
     if {[dict exists $ranRules $name] eq 0 || ![runOnce $name]} {
         dict set ranRules $name 1

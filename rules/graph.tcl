@@ -71,4 +71,7 @@ ruleH hasCycle {} {
 
         }
     }
+    if {$err eq 1} {
+        return 1
+    }
 }

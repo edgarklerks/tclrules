@@ -15,5 +15,5 @@ if {$argc eq 0} {
 }
 
 foreach arg $argv {
-        Rules::rule_$arg
+        Rules::runRule rule_$arg
 }
