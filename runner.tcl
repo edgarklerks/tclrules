@@ -50,7 +50,7 @@ proc invoke {chanout chanerr command args} {
             if [catch {
                 exec {*}$cmdList >@$out 2>@$err
             } status] {
-                puts stderr "\[-\] Error while running $cmdList: $status"
+                Logger::error "Error while running $cmdList: $status"
                 exit 1
             }  
             close $out
@@ -99,9 +99,6 @@ proc mapChan {chan mapper args} {
 
 
 proc run {cmd args} {
-            set perr [mapChan stderr prefixPipe -]
-            set pout [mapChan stdout prefixPipe +]
-            invoke $pout $perr $cmd {*}$args
-            vwait prefix+
+            invoke stdout stderr $cmd {*}$args
 }
 

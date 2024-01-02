@@ -1,0 +1,18 @@
+rule test {} {
+	run tclsh tests.tcl
+}
+
+rule rebuildPkgIndex {} {
+	pkg_mkIndex . *.tcl
+	pkg_mkIndex rules *.tcl 
+	file rename pkgIndex.tcl pkgIndex.tcl.orig
+	set fin [open pkgIndex.tcl.orig r]
+	set fout [open pkgIndex.tcl w]
+
+	puts $fout "lappend auto_path \[file join \[pwd\] rules\]"
+	fcopy $fin $fout
+
+	close $fin
+	close $fout
+	file delete pkgIndex.tcl.orig
+}

@@ -57,6 +57,7 @@ ruleH hasUnimplemented {} {
         }
     }
 }
+
 Rules::addRuleCheck hasUnimplemented
 Rules::addRuleCheck hasCycle
 
