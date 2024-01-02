@@ -2,6 +2,20 @@ package provide ruleH 1.0
 package require logger 1.0
 package require rulesUtils 1.0
 package require rulesGraph 1.0
+namespace eval Rules {
+    variable rules [dict create]
+    variable ruleEdges [dict create]
+    variable rulesDef [dict create]
+    variable ranRules [dict create]
+    variable ruleChecks [list]
+    variable err
+}
+
+ruleH addRuleCheck {name} {
+    variable ruleChecks
+    lappend ruleChecks $name
+}
+
 
 ruleH runOnce {name} {
     if { [lindex [dict get $rules $name] 1] eq "once"} {
@@ -18,10 +32,11 @@ ruleH runRule {name} {
         uplevel $ruleDef
     } else {
         Logger::debug "Skipping rule $name"
-    } 
+    }
 }
 
 ruleH hasUnimplemented {} {
+    variable err
     forRules {
         if {$state eq "U"} {
             Logger::info "Unimplemented $rule"
@@ -29,11 +44,16 @@ ruleH hasUnimplemented {} {
         }
     }
 }
+Rules::addRuleCheck hasUnimplemented
+Rules::addRuleCheck hasCycle
 
 ruleH checkRules {} {
+    variable ruleChecks
+    variable err 
     set err 0
-    hasUnimplemented
-    hasCycle
+    foreach check $ruleChecks {
+        namespace eval Rules [list uplevel $check]
+    }
     if {$err eq 1} {
         exit 1
     }
@@ -41,9 +61,8 @@ ruleH checkRules {} {
 
 ruleH showRules {} {
     puts "The following rules are available"
-    forRules { 
+    forRules {
         puts $rule
 
     }
 }
-

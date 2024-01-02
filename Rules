@@ -12,10 +12,10 @@ rule test {x pgp} {
 	run ls -lctra  
 }
 
-rule x {pgp t} {
+rule x {pgp t test} {
 	run echo "X"
 }
 
-rule t {pgp} {
+rule t {pgp q} {
 	run echo t
 } 

@@ -1,27 +1,15 @@
 package provide rulesUtils 1.0
 
-namespace eval Rules {
-    variable rules [dict create]
-    variable ruleEdges [dict create]
-    variable rulesDef [dict create]
-    variable ranRules [dict create]
+proc ruleH {name largs body {export 1}} {
+    set source "variable rules\n variable ruleEdges\n\
+        variable rulesDef\n variable ranRules\n\
+        $body"
+    namespace eval Rules [list proc $name $largs $source]
+    if {$export eq 1} {
+        namespace eval Rules [list namespace export $name]
+    }
+    proc $name $largs $source
 }
-
-set rules [dict create]
-set ruleEdges [dict create]
-set rulesDef [dict create]
-set ranRules [dict create]
-
-proc ruleH {name larg body} {
-   set source "upvar rules rules;\
-   upvar ruleEdges ruleEdges;\
-   upvar err err;\
-   upvar rulesDef rulesDef;\
-   upvar ranRules ranRules; $body"
-
-   proc $name $larg $source 
-}
-
 
 ruleH forEdges {body} {
     dict for {s ns} $ruleEdges {
@@ -33,8 +21,6 @@ ruleH forEdges {body} {
         }
     }
 }
-
-
 ruleH forRules {body} {
     dict for {rule st} $rules {
         set state [lindex $st 0]
@@ -43,21 +29,21 @@ ruleH forRules {body} {
         uplevel [list set once $once]
         uplevel [list set rule $rule]
         uplevel $body
-        
+
     }
 }
-
 ruleH addRule {name other_rules once} {
 
     insertNode $name [list I $once]
-    initEdge $name 
+    initEdge $name
     foreach rule $other_rules {
         unlessNode rule_$rule {
             insertNode rule_$rule [list U ""]
         }
-        addEdge $name rule_$rule 
-     }
+        addEdge $name rule_$rule
+    }
 }
+
 
 ruleH initEdge {name} {
     set ruleEdges [dict set ruleEdges $name [list]]
@@ -85,16 +71,20 @@ ruleH getNeighbours {name} {
     return [list]
 }
 
-
 ruleH rule {name other_rules body {once "once"}} {
     set name "rule_$name"
     addRule $name $other_rules $once
     set nameRule [list Logger::info "Running rule $name"]
     set prefix ""
     foreach rule $other_rules {
-        append prefix "uplevel rule_$rule\n"
+        append prefix "Rules::rule_$rule\n"
 
     }
     set rulesDef [dict set rulesDef $name "$prefix$nameRule$body"]
     ruleH $name {} "runRule $name"
+}
+
+
+proc rule {name other_rules body {once "once"}} {
+    Rules::rule $name $other_rules $body $once
 }

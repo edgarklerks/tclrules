@@ -52,9 +52,9 @@ proc lunique {list} {
 # Various rules 
 
 ruleH hasCycle {} {
+    variable err
     set visited [dict create]
     set recStack [dict create]
-    upvar err err 
     forRules {
         setVisited $rule 0
         setRecStack $rule 0

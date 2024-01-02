@@ -8,14 +8,12 @@ package require runner
 package require logger
 
 source Rules 
-checkRules
+Rules::checkRules
 
 if {$argc eq 0} {
-    showRules
+    Rules::showRules
 }
 
 foreach arg $argv {
-        rule_$arg
+        Rules::rule_$arg
 }
-
-puts $ranRules
