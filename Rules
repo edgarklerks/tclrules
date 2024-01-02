@@ -1,0 +1,21 @@
+
+rule shit {x} {
+	run echo "shit"
+}
+
+rule pgp {} {
+	puts "Hello"
+	run true
+} 
+
+rule test {x pgp} {
+	run ls -lctra  
+}
+
+rule x {pgp t} {
+	run echo "X"
+}
+
+rule t {pgp} {
+	run echo t
+} 
