@@ -16,3 +16,4 @@ rule rebuildPkgIndex {} {
 	close $fout
 	file delete pkgIndex.tcl.orig
 }
+
