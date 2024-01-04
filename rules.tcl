@@ -48,6 +48,7 @@ ruleH runRule {name} {
     set ruleDef [dict get $rulesDef $name]
     if {[dict exists $ranRules $name] eq 0 || ![runOnce $name]} {
         dict set ranRules $name 1
+        puts $ruleDef
         uplevel $ruleDef
     } else {
         Logger::debug "Skipping rule $name"
@@ -75,6 +76,7 @@ ruleH checkRules {} {
         namespace eval Rules [list uplevel $check]
     }
     if {$err eq 1} {
+        puts "Rules are wrong"
         exit 1
     }
 }
@@ -85,4 +87,18 @@ ruleH showRules {} {
         puts $rule
 
     }
+}
+
+proc forFiles {files body} {
+
+    set res [foreach file $files {
+        if {[file exists $file]} {
+            return 1            
+        }
+    }]
+
+    if {$res} {
+        uplevel $body
+    }
+
 }

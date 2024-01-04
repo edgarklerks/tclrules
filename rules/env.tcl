@@ -19,6 +19,7 @@ namespace eval Rules {
 }
 rename  unknown env_unknown_original  
 proc unknown {args} {
+
     set stringStart [string index $args 0]
     if {[llength $args] == 1 && $stringStart eq "%"} {
         set data [string replace $args 0 0]
@@ -28,6 +29,19 @@ proc unknown {args} {
         } else {
             return [Rules::env $data]
         }
+    } elseif {$stringStart eq "%"} {
+        set data [string replace $args 0 0]
+        if {[regexp "(.+)=(.+)" $data glob name val]} {
+            puts $data
+                if { [catch [list eval $val] res] } {
+                    puts "Name: $name, $val"
+                    Rules::env $name $val
+                } else {
+                    Rules::env $name $res
+                }
+                return 
+        }
     }
     uplevel 1 env_unknown_original $args
 } 
+        

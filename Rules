@@ -1,3 +1,9 @@
+
+%GCC=gcc
+%GCCOPTS=-O3 -V 
+
+puts [Rules::env GCCOPTS]
+
 rule test {} {
 	run tclsh tests.tcl
 }
@@ -17,3 +23,9 @@ rule rebuildPkgIndex {} {
 	file delete pkgIndex.tcl.orig
 }
 
+
+rule testGCC {} {
+	run echo "Ecp 1"
+	run echo "Ecp 2:"
+
+}

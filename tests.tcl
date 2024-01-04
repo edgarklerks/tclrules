@@ -1,6 +1,7 @@
 lappend auto_path [pwd]
 package require tcltest
 package require ruleH
+package require hash
 
 tcltest::test graph-cycle-found {
     Find a simple graph cycle 
@@ -84,4 +85,10 @@ tcltest::test rules_run_once {
 
 } -result 2
 
-%t=3
+tcltest::test hash_works {
+    hash give backs values
+} -body {
+
+    return [hashFile "Rules"]
+
+} -result 2832219450851719212

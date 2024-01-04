@@ -49,20 +49,20 @@ proc invoke {chanout chanerr command args} {
         proc runCommand {cmdList out err} {
             if [catch {
                 exec {*}$cmdList >@$out 2>@$err
+                puts "get out"
             } status] {
                 Logger::error "Error while running $cmdList: $status"
                 exit 1
             }  
             close $out
             close $err
+            return 0
         }
     }
 
 
-    thread::send $tid [list runCommand [list $command {*}$args] $wout $werr]
+    thread::send -async $tid [list runCommand [list $command {*}$args] $wout $werr]
     vwait done
-    chan close $chanout write 
-    chan close $chanerr write
     thread::release $tid
 }
 
@@ -99,6 +99,6 @@ proc mapChan {chan mapper args} {
 
 
 proc run {cmd args} {
-            invoke stdout stderr $cmd {*}$args
+        invoke stdout stderr $cmd {*}$args 
 }
 
