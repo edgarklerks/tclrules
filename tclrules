@@ -1,0 +1,22 @@
+#!/bin/env tclsh
+
+
+set p [file dirname [file readlink [info script]]]
+lappend auto_path  $p
+package require ruleH
+package require runner
+package require logger
+
+
+source Rules 
+Rules::checkRules
+
+if {$argc eq 0} {
+    Rules::showRules
+}
+
+foreach arg $argv {
+    puts "A"
+        set res [Rules::runRule rule_$arg]
+        puts $res
+}
